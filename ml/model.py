@@ -1,8 +1,7 @@
 import pickle
 from sklearn.metrics import fbeta_score, precision_score, recall_score
 from ml.data import process_data
-# TODO: add necessary import
-from sklearn.ensemble import RandomForestClassifer
+from sklearn.ensemble import RandomForestClassifier
 
 # Optional: implement hyperparameter tuning.
 def train_model(X_train, y_train):
@@ -21,7 +20,7 @@ def train_model(X_train, y_train):
         Trained machine learning model.
     """
     # TODO: implement the function
-    pass
+
     clf = RandomForestClassifier(
         n_estimators=100,
         max_depth=None,
@@ -118,7 +117,7 @@ def performance_on_categorical_slice(
         Trained sklearn OneHotEncoder, only used if training=False.
     lb : sklearn.preprocessing._label.LabelBinarizer
         Trained sklearn LabelBinarizer, only used if training=False.
-    model : ???
+    model : RandomForestClassifier()
         Model used for the task.
 
     Returns
@@ -147,6 +146,6 @@ def performance_on_categorical_slice(
         lb=lb,
     )
     preds = inference(model, X_slice)
-    
+
     precision, recall, fbeta = compute_model_metrics(y_slice, preds)
     return precision, recall, fbeta

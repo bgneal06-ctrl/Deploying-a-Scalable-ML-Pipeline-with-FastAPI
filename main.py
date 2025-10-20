@@ -26,21 +26,27 @@ class Data(BaseModel):
     hours_per_week: int = Field(..., example=40, alias="hours-per-week")
     native_country: str = Field(..., example="United-States", alias="native-country")
 
-path = None # TODO: enter the path for the saved encoder 
-encoder = load_model(path)
+PROJECT_ROOT = os.getcwd()
+ENCODER_PATH = os.path.join(PROJECT_ROOT, "model", "encoder.pkl")
+MODEL_PATH = os.path.join(PROJECT_ROOT, "model", "model.pkl")
 
-path = None # TODO: enter the path for the saved model 
-model = load_model(path)
+# Load encoder and model. If files not found, raise error.
+if not os.path.exists(ENCODER_PATH):
+    raise FileNotFoundError(f"Encoder not found at {ENCODER_PATH}. Run training first.")
+encoder = load_model(ENCODER_PATH)
+
+if not os.path.exists(MODEL_PATH):
+    raise FileNotFoundError(f"Model not found at {MODEL_PATH}. Run training first.")
+model = load_model(MODEL_PATH)
 
 # TODO: create a RESTful API using FastAPI
-app = None # your code here
+app = FastAPI(title="Census Income Classifier API")
 
 # TODO: create a GET on the root giving a welcome message
 @app.get("/")
 async def get_root():
     """ Say hello!"""
-    # your code here
-    pass
+    return {"message": "Welcome to the Census Income Classification API!"}
 
 
 # TODO: create a POST on a different path that does model inference
@@ -69,6 +75,14 @@ async def post_inference(data: Data):
         # use data as data input
         # use training = False
         # do not need to pass lb as input
+        data, 
+        categorical_features=cat_features,
+        label=None, 
+        training=False,
+        encoder=encoder,
     )
-    _inference = None # your code here to predict the result using data_processed
-    return {"result": apply_label(_inference)}
+    
+    # Run model inference
+    preds = inference(model, data_processed)
+   
+    return {"result": apply_label(preds)}
