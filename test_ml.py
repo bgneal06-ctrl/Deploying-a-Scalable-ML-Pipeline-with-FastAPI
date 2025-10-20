@@ -72,20 +72,21 @@ def test_train_and_inference(sample_data):
 """
 Test that a saved model can be loaded back and still make valid predictions.
 """
-data, cat_features = sample_data
-X, y, encoder, lb = process_data(
-    data,
-    categorical_features=cat_features,
-    label="salary",
-    training=True
-)
-model = train_model(X, y)
-model_path = tmp_path / "model.pkl"
+def test_save_and_load_model(tmp_path, sample_data):
+    data, cat_features = sample_data
+    X, y, encoder, lb = process_data(
+        data,
+        categorical_features=cat_features,
+        label="salary",
+        training=True
+    )
+    model = train_model(X, y)
+    model_path = tmp_path / "model.pkl"
 
-save_model(model, model_path)
-loaded_model = load_model(model_path)
+    save_model(model, model_path)
+    loaded_model = load_model(model_path)
 
-preds_original = inference(model, X)
-preds_loaded = inference(loaded_model, X)
+    preds_original = inference(model, X)
+    preds_loaded = inference(loaded_model, X)
 
-assert np.array_equal(preds_original, preds_loaded), "Loaded model predictions must match original"
+    assert np.array_equal(preds_original, preds_loaded), "Loaded model predictions must match original"
